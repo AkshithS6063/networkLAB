@@ -14,7 +14,6 @@ int main(){
 
     int sockfd;
     char buff[MAX];
-    char *hello = "Hello from server";
     struct sockaddr_in servaddr , cliaddr ; 
 
     sockfd = socket(AF_INET , SOCK_DGRAM , 0);
@@ -28,17 +27,20 @@ int main(){
 
     bind(sockfd, (SA*)&servaddr, sizeof(servaddr));
 
-    int len , n ;
-    len = sizeof(cliaddr);
+    for(;;){
+        int len , n ;
+        len = sizeof(cliaddr);
+        bzero(buff, MAX);
+        n = recvfrom(sockfd, (char *)buff, MAX,MSG_WAITALL, (struct sockaddr *)&cliaddr,&len);
+        printf("From client: %s (msg length: %ld chars)\nTo client : ", buff, strlen(buff));
+        bzero(buff, MAX);
+        
+        n=0;
+        scanf("%[^\n]%*c", buff);
 
-    n = recvfrom(sockfd, (char *)buff, MAX,MSG_WAITALL, (struct sockaddr *)&cliaddr,&len);
-    buff[n] = '\0';
-    printf("Client : %s\n", buff);
-
-    sendto(sockfd, (const char *)hello, strlen(hello), 
-        MSG_CONFIRM, (const struct sockaddr *) &cliaddr,
-            len);
-    printf("Hello message sent.\n"); 
-
+        sendto(sockfd, (const char *)buff, strlen(buff), 
+            MSG_CONFIRM, (const struct sockaddr *) &cliaddr,
+                len);
+    }
     return 0;
 }

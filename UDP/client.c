@@ -13,8 +13,6 @@ int main(){
 
     int sockfd;
     char buff[MAX];
-    
-    char *hello = "Hello from client";
     struct sockaddr_in servaddr;
   
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -25,20 +23,20 @@ int main(){
     servaddr.sin_port = htons(PORT);
     servaddr.sin_addr.s_addr = INADDR_ANY;
 
-    int n, len;
-      
-    sendto(sockfd, (const char *)hello, strlen(hello),
-        MSG_CONFIRM, (const struct sockaddr *) &servaddr, 
-            sizeof(servaddr));
-    printf("Hello message sent.\n");
-          
-    n = recvfrom(sockfd, (char *)buff, MAX, 
-                MSG_WAITALL, (struct sockaddr *) &servaddr,
-                &len);
-    buff[n] = '\0';
-    printf("Server : %s\n", buff);
-  
-    close(sockfd);
+    for(;;){
+        int n, len;
+        len = sizeof(servaddr);
+        bzero(buff,MAX);
+        scanf("%[^\n]%*c", buff);
+        sendto(sockfd, (const char *)buff, strlen(buff),
+            MSG_CONFIRM, (const struct sockaddr *) &servaddr, 
+                len);
+        
+        n = recvfrom(sockfd, (char *)buff, MAX,MSG_WAITALL, (struct sockaddr *) &servaddr,&len);
+        printf("From server: %s (msg length: %ld chars)\nTo server : ", buff, strlen(buff));
+        // printf("Server : %s\n", buff);
+    }
+    
 
     return 0;
 }
