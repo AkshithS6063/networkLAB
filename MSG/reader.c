@@ -16,5 +16,10 @@ void main(){
     }
     msgrcv(msg_id,&message,sizeof(message),1,0);
     printf("Message received:  %s\n",message.msg_text);
+    
+    printf("Write a sentence: ");
+    fgets(message.msg_text,sizeof(message.msg_text),stdin);
+    msgsnd(msg_id,&message,sizeof(message),0);
+
     msgctl(msg_id,IPC_RMID,NULL);
 }
