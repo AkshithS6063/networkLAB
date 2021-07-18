@@ -9,7 +9,7 @@ struct msg_queue{
 void main(){
     int key,msg_id;
     key=ftok("progfile",65);
-    msg_id=msgget(key, 0666|IPC_CREAT);
+    msg_id = msgget(key, 0666 | IPC_CREAT);
     if(msg_id<0){
         printf("Message queue could not be created");
         exit(1);
